@@ -11,7 +11,8 @@ public class App {
 
     // Cada container possui 5 pacotes, no final serão simulados 10 pacotes como pede o descritivo da atividade.
     private static final Integer QUANTIDADE_DE_CONTAINERS = 2;
-    private static final Integer[] IDENTIFICADORES_DOS_PACOTES_ESPECIAIS = {1, 10, 32, 42};
+    private static final Integer QUANTIDADE_DE_PACOTES_ESPECIAIS = 4;
+
 
     public static void main(String[] args) {
 
@@ -19,11 +20,15 @@ public class App {
 
         List<Pacote> pacotesMonitorados = gerador.pacotesMonitorados;
         List<Container> containersMonitorados = gerador.gerarContainers(QUANTIDADE_DE_CONTAINERS);
-
-        List<Pacote> pacotesEspeciais = gerador.buscarPacotesEspeciais(IDENTIFICADORES_DOS_PACOTES_ESPECIAIS);
-
+        List<Pacote> pacotesEspeciais = gerador.gerarPacotesEspeciais(QUANTIDADE_DE_PACOTES_ESPECIAIS);
         List<Pacote> pacotesEspeciaisEncontrados = new ArrayList<>();
 
+        /**
+         * procura pelos pacotes especiais dentro da lista de pacotes de cada um dos containers
+         *
+         * a complexidade eh cubica, O(N^3), pois existem 3 loops aninhados.
+         * acredito que não tenha há uma situação que irá ocorrer forca bruta já que não há uma busca em sequencia
+         */
         for (Pacote pacoteEspecial : pacotesEspeciais) {
             for (Container container : containersMonitorados) {
                 for (Pacote pacote : container.getPacotes()) {
@@ -43,7 +48,7 @@ public class App {
         System.out.println("\n###############################\n");
 
 
-        System.out.println("###### Pacotes Especiais ######");
+        System.out.println("###### Pacotes Especiais Encontrados ######");
 
         if (pacotesEspeciais.isEmpty()) {
             System.out.println("Nenhum pacote especial encontrado");
@@ -53,8 +58,7 @@ public class App {
             }
         }
 
-        System.out.println("\n###############################");
-
+        System.out.println("\n###########################################");
     }
 
 }

@@ -13,13 +13,20 @@ public class GeradorImpl implements Gerador {
 
     public List<Pacote> pacotesMonitorados = new ArrayList<>();
 
-    public List<Pacote> gerarPacotes(Integer quantidade) {
+    /**
+     * gera uma lista de pacotes.
+     *
+     * a complexidade e linear ja que nao possui loops alinhados.
+     * @param quantidadeDePacotes que serao gerados.
+     * @return lista com a quantidade de pacotes passadas no parametro.
+     */
+    public List<Pacote> gerarPacotes(Integer quantidadeDePacotes) {
         List<Pacote> pacotes = new ArrayList<>();
 
         Random random = new Random();
         List<String> cidades = Arrays.asList("São Paulo", "Pequim", "Vitória da Conquista");
 
-        for (int i = 0; i < quantidade; i++) {
+        for (int i = 0; i < quantidadeDePacotes; i++) {
             int month = random.nextInt(6) + 1;
             int day = random.nextInt(28) + 1;
             int indexCidadeOrigem = random.nextInt(cidades.size());
@@ -36,24 +43,44 @@ public class GeradorImpl implements Gerador {
         return pacotes;
     }
 
-    public List<Pacote> buscarPacotesEspeciais(Integer[] identificadores) {
+    /**
+     * gera uma lista de pacotes especiais.
+     *
+     * a complexidade e linear ja que nao possui loops alinhados.
+     * @param quantidadeDePacotesEspeciais que serao gerados.
+     * @return lista com a quantidade de pacotes especiais passadas no parametro.
+     */
+    public List<Pacote> gerarPacotesEspeciais(Integer quantidadeDePacotesEspeciais) {
         List<Pacote> pacotesEspeciais = new ArrayList<>();
 
-        for (Integer identificador : identificadores) {
-            if (identificador <= pacotesMonitorados.size()) {
-                Pacote pacote = pacotesMonitorados.get(identificador - 1);
+        for (int i = 0; i < quantidadeDePacotesEspeciais; i++) {
+            Random random = new Random();
 
-                pacotesEspeciais.add(pacote);
+            int identificadorPacoteEspecial = random.nextInt(quantidadeDePacotesEspeciais * 2);
+
+            if (identificadorPacoteEspecial < pacotesMonitorados.size()) {
+                Pacote pacote = pacotesMonitorados.get(identificadorPacoteEspecial);
+
+                if (!pacotesEspeciais.contains(pacote)) {
+                    pacotesEspeciais.add(pacote);
+                }
             }
         }
 
         return pacotesEspeciais;
     }
 
-    public List<Container> gerarContainers(Integer quantidade) {
+    /**
+     * gera uma lista de containers.
+     *
+     * a complexidade e linear ja que nao possui loops alinhados.
+     * @param quantidadeDeContainers que serao gerados.
+     * @return lista com a quantidade de containers passadas no parametro.
+     */
+    public List<Container> gerarContainers(Integer quantidadeDeContainers) {
         List<Container> containersMonitorados = new ArrayList<>();
 
-        for (int i = 0; i < quantidade; i++) {
+        for (int i = 0; i < quantidadeDeContainers; i++) {
             Container container = new Container();
 
             List<Pacote> pacotes = gerarPacotes(QUANTIDADE_DE_PACOTES_POR_CONTAINER);

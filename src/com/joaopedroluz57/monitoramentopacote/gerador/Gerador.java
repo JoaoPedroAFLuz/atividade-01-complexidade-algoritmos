@@ -9,7 +9,7 @@ public interface Gerador {
 
     List<Pacote> gerarPacotes(Integer quantidade);
 
-    List<Pacote> buscarPacotesEspeciais(Integer[] identificadores);
+    List<Pacote> gerarPacotesEspeciais(Integer quantidade);
 
     List<Container> gerarContainers(Integer quantidade);
 
