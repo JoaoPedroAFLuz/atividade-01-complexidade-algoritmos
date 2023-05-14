@@ -1,6 +1,6 @@
-package com.joaopedroluz57.monitoramentopacote.container;
+package com.joaopedroluz57.monitoramentopacote.modelo.container;
 
-import com.joaopedroluz57.monitoramentopacote.pacote.Pacote;
+import com.joaopedroluz57.monitoramentopacote.modelo.pacote.Pacote;
 
 import java.util.List;
 
@@ -10,6 +10,10 @@ public class Container {
     private List<Pacote> pacotes;
 
     public Container() {
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public void setId(Integer id) {
@@ -28,4 +32,5 @@ public class Container {
     public String toString() {
         return id.toString() + "\nPacotes:\n" + pacotes.toString();
     }
+
 }

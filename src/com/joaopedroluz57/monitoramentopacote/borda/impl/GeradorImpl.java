@@ -1,22 +1,25 @@
-package com.joaopedroluz57.monitoramentopacote.impl;
+package com.joaopedroluz57.monitoramentopacote.borda.impl;
 
-import com.joaopedroluz57.monitoramentopacote.container.Container;
-import com.joaopedroluz57.monitoramentopacote.gerador.Gerador;
-import com.joaopedroluz57.monitoramentopacote.pacote.Pacote;
+import com.joaopedroluz57.monitoramentopacote.borda.gerador2.Gerador;
+import com.joaopedroluz57.monitoramentopacote.modelo.container.Container;
+import com.joaopedroluz57.monitoramentopacote.modelo.navio.Navio;
+import com.joaopedroluz57.monitoramentopacote.modelo.pacote.Pacote;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class GeradorImpl implements Gerador {
 
+    private final static Integer QUANTIDADE_DE_CONTAINERS_POR_NAVIO = 5;
     private final static Integer QUANTIDADE_DE_PACOTES_POR_CONTAINER = 5;
 
-    public List<Pacote> pacotesMonitorados = new ArrayList<>();
 
     /**
      * gera uma lista de pacotes.
-     *
+     * <p>
      * a complexidade e linear ja que nao possui loops alinhados.
+     *
      * @param quantidadeDePacotes que serao gerados.
      * @return lista com a quantidade de pacotes passadas no parametro.
      */
@@ -27,17 +30,15 @@ public class GeradorImpl implements Gerador {
         List<String> cidades = Arrays.asList("São Paulo", "Pequim", "Vitória da Conquista");
 
         for (int i = 0; i < quantidadeDePacotes; i++) {
-            int month = random.nextInt(6) + 1;
-            int day = random.nextInt(28) + 1;
             int indexCidadeOrigem = random.nextInt(cidades.size());
             int indexCidadeDestino = random.nextInt(cidades.size());
 
             Pacote pacote = new Pacote(
-                    pacotesMonitorados.size() + 1, cidades.get(indexCidadeOrigem), cidades.get(indexCidadeDestino), LocalDate.of(2023, month, day)
+                    UUID.randomUUID(), cidades.get(indexCidadeOrigem),
+                    cidades.get(indexCidadeDestino)
             );
 
             pacotes.add(pacote);
-            this.pacotesMonitorados.add(pacote);
         }
 
         return pacotes;
@@ -45,35 +46,46 @@ public class GeradorImpl implements Gerador {
 
     /**
      * gera uma lista de pacotes especiais.
-     *
+     * <p>
      * a complexidade e linear ja que nao possui loops alinhados.
+     *
      * @param quantidadeDePacotesEspeciais que serao gerados.
      * @return lista com a quantidade de pacotes especiais passadas no parametro.
      */
-    public List<Pacote> gerarPacotesEspeciais(Integer quantidadeDePacotesEspeciais) {
+    public List<Pacote> gerarPacotesEspeciais(Integer quantidadeDePacotesEspeciais, List<Navio> navios) {
         List<Pacote> pacotesEspeciais = new ArrayList<>();
+        List<Pacote> pacotesMonitorados = navios.stream()
+                .map(Navio::getContainers)
+                .flatMap(Collection::stream)
+                .map(Container::getPacotes)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
 
         for (int i = 0; i < quantidadeDePacotesEspeciais; i++) {
             Random random = new Random();
 
-            int identificadorPacoteEspecial = random.nextInt(quantidadeDePacotesEspeciais * 2);
+            int indexPacoteEspecial = random.nextInt(pacotesMonitorados.size() * 2);
 
-            if (identificadorPacoteEspecial < pacotesMonitorados.size()) {
-                Pacote pacote = pacotesMonitorados.get(identificadorPacoteEspecial);
+            if (indexPacoteEspecial < pacotesMonitorados.size()) {
 
-                if (!pacotesEspeciais.contains(pacote)) {
-                    pacotesEspeciais.add(pacote);
-                }
+                pacotesEspeciais.add(pacotesMonitorados.get(indexPacoteEspecial));
             }
         }
 
         return pacotesEspeciais;
     }
 
+    @Override
+    public List<Navio> gerarNavio(Integer quantidade) {
+        return IntStream.rangeClosed(1, quantidade)
+                .mapToObj(x -> new Navio(gerarContainers(QUANTIDADE_DE_CONTAINERS_POR_NAVIO)))
+                .collect(Collectors.toList());
+    }
+
     /**
      * gera uma lista de containers.
-     *
      * a complexidade e linear ja que nao possui loops alinhados.
+     *
      * @param quantidadeDeContainers que serao gerados.
      * @return lista com a quantidade de containers passadas no parametro.
      */
